@@ -15,6 +15,11 @@
 #include <iomanip>
 #include "graphl.h"
 
+// ---------------------Default Constructor--------------------------------
+// Constructor: Default constructor for graphl.
+// preconditions: Does not take any parameters. 
+// postconditions: Sets and initializes to null or false. 
+// --------------------------------------------------------------------------
 GraphL::GraphL()
 {
 	for (int i = 1; i < MAXNODES; i++)
@@ -26,10 +31,20 @@ GraphL::GraphL()
 	size = 0;
 }
 
+// ---------------------Destructor--------------------------------
+// Destructor: Deallocates memory
+// preconditions: Does not take any parameters.
+// postconditions: Deallocates memory
+// --------------------------------------------------------------------------
 GraphL::~GraphL()
 {
 }
 
+// ---------------------buildGraph--------------------------------
+// buildGraph: opens and reads file creates graph node info
+// preconditions: takes in ifstream file
+// postconditions: reads data creates graph node info
+// --------------------------------------------------------------------------
 void GraphL::buildGraph(istream& file1)
 {
 	int to, from;
@@ -47,6 +62,7 @@ void GraphL::buildGraph(istream& file1)
 	}
 	while (!file1.eof())
 	{
+		getline(file1, node);
 		file1 >> to >> from;
 		if ( from == 0 )
 		{
@@ -56,8 +72,17 @@ void GraphL::buildGraph(istream& file1)
 	}
 }
 
+// ---------------------DFS--------------------------------
+// DFS: 
+// preconditions: 
+// postconditions: 
+// ---------------------------------------------------------
 void GraphL::dFS()
 {
+	for (int i = 0; i <= size; i++)
+	{
+		nodeData[i].visited = false;
+	}
 	cout << "Depth-first : ";
 	for (int v = 1; v <= size; v++)
 	{
@@ -68,20 +93,11 @@ void GraphL::dFS()
 	}
 }
 
-void GraphL::displayGraph()
-{
-	for (int i = 1; i <= size; i++)
-	{
-		cout << "Node" << i << "    "<< *nodeData[i].data << endl;
-		EdgeNode* temp = nodeData[i].edgeHead;
-
-		while (temp != NULL)
-		{
-
-		}
-	}
-}
-
+// ---------------------DFSHelper--------------------------------
+// DFSHelper: 
+// preconditions: 
+// postconditions: 
+// ---------------------------------------------------------
 void GraphL::dFSHelper(int v)
 {
 	nodeData[v].visited = true;
@@ -97,4 +113,22 @@ void GraphL::dFSHelper(int v)
 		curr = curr->nextEdge;
 	}
 
+}
+// ---------------------displayGraph--------------------------------
+// displayGraph: 
+// preconditions: 
+// postconditions: 
+// --------------------------------------------------------------------------
+void GraphL::displayGraph()
+{
+	for (int i = 1; i <= size; i++)
+	{
+		cout << "Node" << i << "    " << *nodeData[i].data << endl;
+		EdgeNode* temp = nodeData[i].edgeHead;
+
+		while (temp != NULL)
+		{
+
+		}
+	}
 }
