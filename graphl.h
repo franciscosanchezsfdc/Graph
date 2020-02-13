@@ -23,9 +23,8 @@ public:
     GraphL();
     ~GraphL();
     void buildGraph(istream& file);
-    void dFS();
     void displayGraph();
-  
+    void depthFirstSearch();
    
 
 private:
@@ -33,26 +32,41 @@ private:
     struct EdgeNode;      // forward reference for the compiler
 
     struct GraphNode {    // structs used for simplicity, use classes if desired
-
         EdgeNode* edgeHead; // head of the list of edges
-
         NodeData* data;     // data information about each node
-
         bool visited;
 
+        GraphNode() {
+            edgeHead = NULL;
+            data = NULL;
+            visited = false;
+        }
+        
+        ~GraphNode() {
+            if (data) { delete data; }
+            EdgeNode *node = edgeHead;
+            while(node) {
+                EdgeNode *next = node->nextEdge;
+                delete node;
+                node = next;
+            }
+        }
     };
 
-
-
     struct EdgeNode {
-
         int adjGraphNode;  // subscript of the adjacent graph node
-
         EdgeNode* nextEdge;
+        
+        EdgeNode(int n) {
+            adjGraphNode = n;
+            nextEdge = NULL;
+        }
 
     };
     GraphNode nodeData[MAX_NODES];
+    int size;
+
     void makeEmpty();
     void dFSHelper(int);
-    int size;
+    void insertEdge(int, int);
 };

@@ -22,12 +22,6 @@
 // --------------------------------------------------------------------------
 GraphL::GraphL()
 {
-	for (int i = 1; i < MAXNODES; i++)
-	{
-		nodeData[i].visited = false;
-		nodeData[i].edgeHead = NULL;
-		nodeData[i].data = NULL;
-	}
 	size = 0;
 }
 
@@ -54,22 +48,28 @@ void GraphL::buildGraph(istream& file1)
 
 	for (int i = 1; i <= size; i++)
 	{
-
 		getline(file1, node);
-		NodeData* temp = new NodeData(node);
-		nodeData[i].data = temp;
-
+		nodeData[i].data = new NodeData(node);
 	}
 	while (!file1.eof())
 	{
-		getline(file1, node);
-		file1 >> to >> from;
+		file1 >> from >> to;
 		if ( from == 0 )
 		{
 			break;
 		}
-		
+        insertEdge(from, to);
 	}
+}
+
+void GraphL::insertEdge(int from, int to)
+{
+    // make sure the nodes are valid
+    if (from > 0 && from <= size && to > 0 && to <= size) {
+        EdgeNode *newNode = new EdgeNode(to);
+        newNode->nextEdge = nodeData[from].edgeHead;
+        nodeData[from].edgeHead = newNode;
+    }
 }
 
 // ---------------------DFS--------------------------------
@@ -77,13 +77,13 @@ void GraphL::buildGraph(istream& file1)
 // preconditions: 
 // postconditions: 
 // ---------------------------------------------------------
-void GraphL::dFS()
+void GraphL::depthFirstSearch()
 {
 	for (int i = 0; i <= size; i++)
 	{
 		nodeData[i].visited = false;
 	}
-	cout << "Depth-first : ";
+	cout << "Depth-first ordering: ";
 	for (int v = 1; v <= size; v++)
 	{
 		if (!nodeData[v].visited)
@@ -91,6 +91,7 @@ void GraphL::dFS()
 			dFSHelper(v);
 		}
 	}
+    cout << endl;
 }
 
 // ---------------------DFSHelper--------------------------------
@@ -100,19 +101,15 @@ void GraphL::dFS()
 // ---------------------------------------------------------
 void GraphL::dFSHelper(int v)
 {
-	nodeData[v].visited = true;
-	EdgeNode* curr = nodeData[v].edgeHead;
-
-	while (curr != NULL)
-	{
-		if (!nodeData[curr->adjGraphNode].visited)
-		{
-			dFSHelper(curr->adjGraphNode);
-
-		}
-		curr = curr->nextEdge;
-	}
-
+	if(!nodeData[v].visited) {
+        std::cout << v << " ";
+        nodeData[v].visited = true;
+        EdgeNode *edge = nodeData[v].edgeHead;
+        while(edge) {
+            dFSHelper(edge->adjGraphNode);
+            edge=edge->nextEdge;
+        }
+    }
 }
 // ---------------------displayGraph--------------------------------
 // displayGraph: 
@@ -121,14 +118,13 @@ void GraphL::dFSHelper(int v)
 // --------------------------------------------------------------------------
 void GraphL::displayGraph()
 {
-	for (int i = 1; i <= size; i++)
-	{
-		cout << "Node" << i << "    " << *nodeData[i].data << endl;
-		EdgeNode* temp = nodeData[i].edgeHead;
-
-		while (temp != NULL)
-		{
-
-		}
-	}
+	for(int n=1; n <= size; n++) {
+        std::cout << "Node " << n << "\t" << *nodeData[n].data << endl;
+        EdgeNode *node = nodeData[n].edgeHead;
+        while (node) {
+            std::cout << "\t\tedge " << n << " " << node->adjGraphNode << endl;
+            node = node->nextEdge;
+        }
+        std::cout << endl;
+    }
 }
